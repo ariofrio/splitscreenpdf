@@ -28,6 +28,9 @@
     header * {
       display: inline;
     }
+    header script {
+      display: none;
+    }
     header h1 {
       font-size: 100%;
       margin-right: 1em;
@@ -38,6 +41,15 @@
     }
     header a:hover {
       color: white;
+    }
+    header aside {
+      float: right;
+    }
+    header aside .addthis_toolbox {
+      display: inline-block;
+      margin-top: 8px;
+      vertical-align: top;
+      zoom: .75;
     }
     #editor, #viewWrap {
       position: absolute;
@@ -56,8 +68,22 @@
 </head>
 <body>
   <header>
-  <h1><a href="http://splitscreenpdf.com">SplitScreenPDF.com</a></h1>
+    <h1><a href="http://splitscreenpdf.com">SplitScreenPDF.com</a></h1>
     <p>Powered by <a href="http://manuels.github.com/hpdf.js/">hpdf.js</a></p>
+    <aside>
+      <p>Share this code:</p>
+      <!-- AddThis Button BEGIN -->
+      <div class="addthis_toolbox addthis_default_style addthis_32x32_style ">
+      <a class="addthis_button_preferred_1"></a>
+      <a class="addthis_button_preferred_2"></a>
+      <a class="addthis_button_preferred_3"></a>
+      <a class="addthis_button_preferred_4"></a>
+      <a class="addthis_button_compact"></a>
+      <a class="addthis_counter addthis_bubble_style"></a>
+      </div>
+      <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-508452232356f0d9"></script>
+      <!-- AddThis Button END -->
+    </aside>
   </header>
 
   <div id="editor">var helvetica = pdf.font('Helvetica');
