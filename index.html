@@ -70,30 +70,45 @@ page.beginText();
 page.moveTextPos( (page.width()-tw)/2, page.height()-50 );
 page.showText(title);
 page.endText();</div>
-  <div id="viewWrap"><iframe src="about:blank" id="view"></iframe></div>
+  <script>
+    var editor = document.getElementById("editor");
+    // Get the user's code from the URL.
+    if(document.location.hash !== "") {
+      editor.textContent = decodeURIComponent(document.location.hash.substr(1));
+    }
+  </script>
   <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"
     type="text/javascript" charset="utf-8"></script>
-  <script src="https://github.com/manuels/hpdf.js/raw/master/hpdf.min.js"
-    type="text/javascript" charset="utf-8"></script>
   <script>
-    var editor = ace.edit("editor");
-    //editor.setTheme("ace/theme/monokai");
+    // Load the ACE editor.
+    var editor = ace.edit(editor);
     editor.getSession().setMode("ace/mode/javascript");
+  </script>
 
+  <div id="viewWrap"><iframe src="about:blank" id="view"></iframe></div>
+  <script src="hpdf.min.js" type="text/javascript" charset="utf-8"></script>
+  <script>
     var iframe = document.getElementById("view");
+
+    // Update the URL and PDF view.
+    var updateNow = function() {
+      var pdf = new HPDF();
+      var code = editor.getValue();
+      eval(code);
+      iframe.src = pdf.toDataUri();
+      pdf.free();
+      document.location.hash = "#" + encodeURIComponent(code);
+    }
+    // Let the user finish typing before updating anything!
     var throttler = null;
     var update = function() {
       if(throttler) clearTimeout(throttler);
-      throttler = setTimeout(function() {
-        var pdf = new HPDF();
-        var code = editor.getValue();
-        eval(code);
-        iframe.src = pdf.toDataUri();
-        pdf.free();
-      }, 500);
+      throttler = setTimeout(updateNow, 300);
     };
+    // Plug in.
     editor.getSession().on('change', update);
-    update();
+    // Profit.
+    updateNow();
   </script>
 </body>
 </html>
