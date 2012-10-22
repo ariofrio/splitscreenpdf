@@ -94,14 +94,16 @@
 
   <div id="editor">var helvetica = pdf.font('Helvetica');
 
-var title = "This is a test!";
+var title = "Edit the code on the left. Go ahead. Do it.";
 var page = pdf.addPage();
 page.setFontAndSize(helvetica, 24);
 var tw = page.textWidth(title);
 page.beginText();
-page.moveTextPos( (page.width()-tw)/2, page.height()-50 );
+page.moveTextPos( (page.width()-tw)/2, page.height()/2 );
 page.showText(title);
-page.endText();</div>
+page.endText();
+
+// For more examples, see http://manuels.github.com/hpdf.js/</div>
   <script>
     var editor = document.getElementById("editor");
     // Get the user's code from the URL.
