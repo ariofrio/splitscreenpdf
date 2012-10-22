@@ -47,9 +47,11 @@
     }
     header aside .addthis_toolbox {
       display: inline-block;
-      margin-top: 8px;
-      vertical-align: top;
+      margin-top: 10.6667px;
       zoom: .75;
+    }
+    header aside .addthis_toolbox .addthis_button_link {
+      margin-left: 16px;
     }
     #editor, #viewWrap {
       position: absolute;
@@ -71,28 +73,16 @@
     <h1><a href="http://ariofrio.github.com/splitscreenpdf">SplitScreenPDF</a></h1>
     <p>Powered by <a href="http://manuels.github.com/hpdf.js/">hpdf.js</a></p>
     <aside>
-      <p>Share this code:</p>
       <!-- AddThis Button BEGIN -->
-      <div class="addthis_toolbox addthis_default_style addthis_32x32_style ">
+      <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
       <a class="addthis_button_preferred_1"></a>
       <a class="addthis_button_preferred_2"></a>
-      <a class="addthis_button_preferred_3"></a>
-      <a class="addthis_button_preferred_4"></a>
       <a class="addthis_button_compact"></a>
-      <a class="addthis_counter addthis_bubble_style"></a>
+      <a class="addthis_button_link"></a>
       </div>
       <script type="text/javascript">
-        var addthis_share = {
-          url_transforms: {
-            shorten: {
-              facebook: 'bitly',
-              twitter: 'bitly'
-            }
-          },
-          shorteners: {
-            bitly: {}
-          }
-        };
+        var addthis_config = {services_exclude: 'print'};
+        var addthis_share = {}
       </script>
       <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-508452232356f0d9"></script>
       <!-- AddThis Button END -->
@@ -113,7 +103,7 @@ page.endText();</div>
     var editor = document.getElementById("editor");
     // Get the user's code from the URL.
     if(document.location.hash !== "") {
-      editor.textContent = decodeURIComponent(document.location.hash.substr(1));
+      editor.textContent = atob(decodeURIComponent(document.location.hash.substr(1)));
     }
   </script>
   <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"
@@ -131,12 +121,27 @@ page.endText();</div>
 
     // Update the URL and PDF view.
     var updateNow = function() {
-      var pdf = new HPDF();
       var code = editor.getValue();
+
+      // Update URL.
+      var req = new XMLHttpRequest();
+      req.addEventListener("load", function() {
+        if(req.status == 200) {
+          addthis_share.url = req.responseText;
+          addthis.toolbox(".addthis_toolbox");
+        }
+      });
+      req.open("GET", "http://cors-proxy-ariofrio.herokuapp.com/tinyurl.com/api-create.php?url=" +
+        encodeURIComponent("http://andresriofrio.com/splitscreenpdf" +
+        document.location.hash), true);
+      req.send();
+
+      // Update PDF.
+      var pdf = new HPDF();
       eval(code);
       iframe.src = pdf.toDataUri();
       pdf.free();
-      document.location.hash = "#" + encodeURIComponent(code);
+      document.location.hash = "#" + encodeURIComponent(btoa(code));
     }
     // Let the user finish typing before updating anything!
     var throttler = null;
